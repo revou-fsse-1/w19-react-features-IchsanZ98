@@ -1,54 +1,29 @@
-import { useEffect, useState } from "react";
-
-interface Product {
-  title: string;
-  brand: string;
-  thumbnail: string;
-  price: number;
-  rating: number;
-}
+import { Routes, Route } from "react-router-dom";
+import { Login } from "./components/auth/Login";
+import { Register } from "./components/auth/Register";
+import { ErrorPage } from "./components/ErrorPage";
+import { Dashboard } from "./components/dashboard/Dashboard";
+import { Edit } from "./components/dashboard/Edit";
+import { AuthRoute } from "./components/AuthRoute";
+import { Add } from "./components/dashboard/Add";
+import { PrivateRoute } from "./components/PrivateRoute";
 
 function App() {
-  const [data, setData] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchData = () => {
-      fetch(`https://dummyjson.com/products`)
-        .then((response) => response.json())
-        .then((actualData) => {
-          console.log(actualData);
-          setData(actualData.products);
-          console.log(data);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    };
-    fetchData();
-  }, [data]);
-
   return (
-    <div className="App">
-      <tbody>
-        <tr>
-          <th>Name</th>
-          <th>Brand</th>
-          <th>Image</th>
-          <th>Price</th>
-          <th>Rating</th>
-        </tr>
-        {data.map((item, index) => (
-          <tr key={index}>
-            <td>{item.title}</td>
-            <td>{item.brand}</td>
-            <td>
-              <img src={item.thumbnail} alt="" height={100} />
-            </td>
-            <td>{item.price}</td>
-            <td>{item.rating}</td>
-          </tr>
-        ))}
-      </tbody>
+    <div >
+      <div >
+        <Routes>
+          <Route path="/" element={<AuthRoute />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<ErrorPage />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:id" element={<Edit />} />
+            <Route path="/dashboard/add" element={<Add />} />
+          </Route>
+        </Routes>
+      </div>
     </div>
   );
 }
